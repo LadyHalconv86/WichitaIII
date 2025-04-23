@@ -14,6 +14,8 @@ import java.util.Collections;
 import java.util.InputMismatchException;
 import java.util.List;
 import java.util.Scanner;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class WichitaIII_main {
 
@@ -47,72 +49,89 @@ public class WichitaIII_main {
                 switch (opcion) {
 
                     case 1:
-                        scanner.nextLine(); // Limpia el buffer para que no se quede ninguna orden guardada temporalmente y
-                        // evitar errores en el desarrollo del menú. Se repetirá en todos los case
-                        boolean add = true; // Se inicializa la variable booleana add
-                        String apellidos; // Declaramos las variables sin inicializarlas, salvo edad, que sí se inicializa
-                        // con valor 0 para poder hacer la comparación posterior
-                        String nombre;
-                        String edad1;
-                        int edad = 0;
+					scanner.nextLine(); // Limpia el buffer para que no se quede ninguna orden guardada temporalmente y
+										// evitar errores en el desarrollo del menú. Se repetirá en todos los case
+					boolean add = true; // Se inicializa la variable booleana add
+					String apellidos; // Declaramos las variables sin inicializarlas, salvo edad, que sí se inicializa
+										// con valor 0 para poder hacer la comparación posterior
+					String nombre;
+					String edad1;
+					int edad = 0;
 
-                        while (add) { // Se mantiene en el bucle mientras add = true
+					while (add) { // Se mantiene en el bucle mientras add = true
 
-                            System.out.println("Si ha terminado de añadir estudiantes al listado, escriba: fin");
+						System.out.println("Si ha terminado de añadir estudiantes al listado, escriba: fin");
 
-                            final String fin = "fin"; // Inicializamos la variable fin con el valor string "fin" para dar
-                            // instrucciones posteriormente con las que salir del bucle
+						final String fin = "fin"; // Inicializamos la variable fin con el valor string "fin" para dar
+													// instrucciones posteriormente con las que salir del bucle
 
-                            System.out.println("Introduce los apellidos del estudiante");
+						Pattern regExp = Pattern.compile("[a-zA-ZáéíóúÁÉÍÓÚñÑ ]+"); // Compilo el patrón de la expresión
+																					// regular con la clase Pattern para
+																					// que detecte bien el formato de
+																					// correo
 
-                            apellidos = scanner.nextLine(); // Se introduce la variable apellidos de tipo String por
-                            // teclado y cambia de línea
+						System.out.println("Introduce los apellidos del estudiante");
 
-                            if (apellidos.equalsIgnoreCase(fin)) {
-                                add = false; // Si apellidos es igual a "fin", obviando si lleva mayúsculas o no, cambia el
-                                // valor de add a false para salir del bucle
+						apellidos = scanner.nextLine(); // Se introduce la variable apellidos de tipo String por
+														// teclado y cambia de línea
+						Matcher m = regExp.matcher(apellidos);
+						if (!m.matches()) {
+							System.out.println("Introduzca un valor correcto para los apellidos");
+						}
 
-                            } else { // Si no cambia add a false, continúa
-                                System.out.println("Introduce el nombre de pila del estudiante");
-                                nombre = scanner.nextLine(); // Se introduce la variable nombre de tipo String por
-                                // teclado y cambia de línea
-                                if (nombre.equalsIgnoreCase(fin)) {
-                                    add = false; // Mismo procedimiento para salir del bucle
-                                } else {
-                                    System.out.println("Introduce la edad del estudiante");
-                                    edad1 = scanner.nextLine(); // Se introduce la variable edad1 de tipo string por teclado
-                                    // y cambia de línea
+						else if (apellidos.equalsIgnoreCase(fin)) {
+							add = false; // Si apellidos es igual a "fin", obviando si lleva mayúsculas o no, cambia el
+											// valor de add a false para salir del bucle
 
-                                    if (edad1.equalsIgnoreCase(fin)) {
-                                        add = false; // Se ha inicializado edad1 como variable de tipo string para poder
-                                        // hacer la equivalencia con la constante "fin" y que pueda salir
-                                        // del bucle si se da la orden
-                                    } else {
-                                        try {
-                                            edad = Integer.parseInt(edad1); // Se transforma la variable de tipo string
-                                            // edad1 a la variable edad de tipo int para que
-                                            // esa sea la indicación de la edad a partir de
-                                            // ahora
-                                        } catch (NumberFormatException e) { // Si se ha introducido mal edad1 y no puede
-                                            // transformarse a tipo entero, captura una
-                                            // excepción y vuelve a iniciar el bucle while
-                                            // del case1
-                                            System.out.println("Por favor, introduce una edad válida.");
+						} else { // Si no cambia add a false, continúa
+							System.out.println("Introduce el nombre de pila del estudiante");
+							nombre = scanner.nextLine(); // Se introduce la variable nombre de tipo String por
+							// teclado y cambia de línea
+							Matcher m1 = regExp.matcher(nombre);
+							if (!m1.matches()) {
+								System.out.println("Introduzca un valor correcto para el nombre");
+							}
 
-                                        }
+							else if (nombre.equalsIgnoreCase(fin)) {
+								add = false; // Mismo procedimiento para salir del bucle
+							} else {
+								System.out.println("Introduce la edad del estudiante");
+								edad1 = scanner.nextLine(); // Se introduce la variable edad1 de tipo string por teclado
+															// y cambia de línea
 
-                                        addEstudiante(archivo, apellidos, nombre, edad); // Lanza el método estático
-                                        // addEstudiante
+								if (edad1.equalsIgnoreCase(fin)) {
+									add = false; // Se ha inicializado edad1 como variable de tipo string para poder
+													// hacer la equivalencia con la constante "fin" y que pueda salir
+													// del bucle si se da la orden
+								} else {
+									try {
+										edad = Integer.parseInt(edad1); // Se transforma la variable de tipo string
+																		// edad1 a la variable edad de tipo int para que
+																		// esa sea la indicación de la edad a partir de
+																		// ahora
+										if (edad < 16 || edad > 110) {
+											System.out.println("Por favor, introduce una edad válida.");
+										}
+									} catch (NumberFormatException e) { // Si se ha introducido mal edad1 y no puede
+																		// transformarse a tipo entero, captura una
+																		// excepción y vuelve a iniciar el bucle while
+																		// del case1
+										System.out.println("Por favor, introduce una edad válida.");
 
-                                    }
+									}
 
-                                }
+									addEstudiante(archivo, apellidos, nombre, edad); // Lanza el método estático
+																						// addEstudiante
 
-                            }
+								}
 
-                        }
+							}
 
-                        break;
+						}
+
+					}
+
+					break;
                     case 2:
                         scanner.nextLine();
                         listarEstudiantes(archivo); // Lanza el método estático listarEstudiantes
